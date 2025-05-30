@@ -1,27 +1,112 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <title>Simple Web Crawler</title>
+    <style>
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 6px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+    .scrollbar-thin {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    }
+  </style>
 </head>
-<body>
-    <h2>Simple Web Crawler</h2>
-    <form method="POST">
-        <label>Seed URL:</label><br>
-        <input type="text" name="seed" required><br><br>
-        <label>Keyword to search:</label><br>
-        <input type="text" name="keyword" required><br><br>
-        <button type="submit">Crawl</button>
-    </form>
-
-    {% if result %}
-        <hr>
-        {% if result.error %}
-            <p style="color:red;">Error: {{ result.error }}</p>
-        {% else %}
-            <p>URL: {{ result.url }}</p>
-            <p>Keyword: "{{ result.keyword }}"</p>
-            <p>Found: <strong>{{ "Yes" if result.found else "No" }}</strong></p>
-        {% endif %}
-    {% endif %}
+<body class="bg-gray-900 text-white font-['Montserrat'] h-screen flex flex-col items-center justify-center">
+    <div class="relative w-full max-w-4xl flex flex-col">
+        <h2 class="py-4 font-bold transition duration-500 ease-in-out
+            {% if result %}
+              text-2xl text-start
+            {% else %}
+              text-5xl text-center mb-8
+            {% endif %}
+        ">
+            Simple Web Crawler
+        </h2>
+        
+        {% if result %}
+        <div id="chat-container" class="p-8 h-[calc(60vh)] w-full overflow-y-auto px-4 pb-32 scrollbar-thin">
+            {% if result.error %}
+                <p style="color:red;">Error: {{ result.error }}</p>
+            {% else %}
+                <p>URL: <strong>{{ result.url }}</strong></p>
+                <p>Keyword: <strong>"{{ result.keyword }}"</strong></p>
+                <p>Found: <strong>{{ "Yes" if result.found else "No" }}</strong></p>
+            <hr>
+                <p>nanti disini muncul rutenya
+                </p>
+                {% endif %}
+            {% endif %}
+        </div>
+        
+        <div class="bg-gray-800 rounded-lg shadow-2xl p-4
+                {% if result %}
+                    relative bottom-0 w-full
+                {% else %}
+                    min-w-[25rem]
+                {% endif %}
+            ">
+            <form method="POST" class="flex flex-col">
+                <div class="flex 
+                    {% if result %}
+                    flex-row
+                    {% else %}
+                    flex-col
+                    {% endif %}
+                    ">
+                    <label class="w-fit p-2 shrink-0">Seed URL:</label>
+                    <input id="seed-input" type="text" name="seed" required placeholder="https://" class="p-2 flex-1 bg-gray-800 text-white rounded-lg active:outline-none active:bg-gray-900 focus:outline-none focus:bg-gray-900">
+                </div>
+                <div class="flex 
+                    {% if result %}
+                    flex-row
+                    {% else %}
+                    flex-col
+                    {% endif %}
+                    ">
+                    <label class="w-fit shrink-0 p-2">Keyword:</label>
+                    <input id="keyword-input" type="text" name="keyword" required placeholder="masukan keyword" class="p-2 flex-1 bg-gray-800 text-white rounded-lg active:outline-none active:bg-gray-900 focus:outline-none focus:bg-gray-900">
+                </div>
+                <div class="mt-2 flex 
+                {% if result %}
+                justify-end
+                {% else %}
+                justify-center
+                {% endif %}">
+                    <button type="submit" class="p-2 bg-blue-700 hover:bg-blue-900 text-white font-bold rounded">
+                        Start Crawl!
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const chatContainer = document.getElementById('chat-container');
+      if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+    });
+
+    function bindDynamicBackground(inputEl, emptyClass = 'bg-gray-800', filledClass = 'bg-gray-900') {
+            function update() {
+                const isFilled = inputEl.value.trim() !== '';
+                inputEl.classList.toggle(emptyClass, !isFilled);
+                inputEl.classList.toggle(filledClass, isFilled);
+            }
+
+            inputEl.addEventListener('input', update);
+            update();
+        }
+
+        bindDynamicBackground(document.getElementById('seed-input'));
+        bindDynamicBackground(document.getElementById('keyword-input'));
+</script>
 </html>
