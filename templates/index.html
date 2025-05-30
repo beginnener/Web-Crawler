@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Web Crawler</title>
+</head>
+<body>
+    <h2>Simple Web Crawler</h2>
+    <form method="POST">
+        <label>Seed URL:</label><br>
+        <input type="text" name="seed" required><br><br>
+        <label>Keyword to search:</label><br>
+        <input type="text" name="keyword" required><br><br>
+        <button type="submit">Crawl</button>
+    </form>
+
+    {% if result %}
+        <hr>
+        {% if result.error %}
+            <p style="color:red;">Error: {{ result.error }}</p>
+        {% else %}
+            <p>URL: {{ result.url }}</p>
+            <p>Keyword: "{{ result.keyword }}"</p>
+            <p>Found: <strong>{{ "Yes" if result.found else "No" }}</strong></p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
