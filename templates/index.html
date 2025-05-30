@@ -5,18 +5,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <title>Simple Web Crawler</title>
     <style>
-    .scrollbar-thin::-webkit-scrollbar {
-      width: 6px;
-    }
-    .scrollbar-thin::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.2);
-      border-radius: 4px;
-    }
-    .scrollbar-thin {
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-    }
-  </style>
+        .scrollbar-thin::-webkit-scrollbar {
+        width: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        }
+        .scrollbar-thin {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+     </style>
 </head>
 <body class="bg-gray-900 text-white font-['Montserrat'] h-screen flex flex-col items-center justify-center">
     <div class="relative w-full max-w-4xl flex flex-col">
@@ -31,27 +31,28 @@
         </h2>
         
         {% if result %}
-        <div id="chat-container" class="p-8 h-[calc(60vh)] w-full overflow-y-auto px-4 pb-32 scrollbar-thin">
-            {% if result.error %}
-                <p style="color:red;">Error: {{ result.error }}</p>
-            {% else %}
-                <p>URL: <strong>{{ result.url }}</strong></p>
-                <p>Keyword: <strong>"{{ result.keyword }}"</strong></p>
-                <p>Found: <strong>{{ "Yes" if result.found else "No" }}</strong></p>
-            <hr>
-                <p>nanti disini muncul rutenya
-                </p>
+            <div id="chat-container" class="p-8 h-[calc(60vh)] w-full overflow-y-auto px-4 pb-32 scrollbar-thin">
+                {% if result.error %}
+                    <p style="color:red;">Error: {{ result.error }}</p>
+                {% else %}
+                    <p>URL: <strong>{{ result.url }}</strong></p>
+                    <p>Keyword: <strong>"{{ result.keyword }}"</strong></p>
+                    <p>Found: <strong>{{ "Yes" if result.found else "No" }}</strong></p>
+                    <hr>
+                    <p>
+                        nanti disini muncul rutenya
+                    </p>
                 {% endif %}
-            {% endif %}
-        </div>
+            </div>
+        {% endif %}
         
         <div class="bg-gray-800 rounded-lg shadow-2xl p-4
-                {% if result %}
-                    relative bottom-0 w-full
-                {% else %}
-                    min-w-[25rem]
-                {% endif %}
-            ">
+            {% if result %}
+                relative bottom-0 w-full
+            {% else %}
+                min-w-[25rem]
+            {% endif %}
+        ">
             <form method="POST" class="flex flex-col">
                 <div class="flex 
                     {% if result %}
