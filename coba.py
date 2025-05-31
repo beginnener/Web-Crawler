@@ -3,9 +3,6 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 from collections import deque
 
-# Konfigurasi global
-# MAX_PAGES = 10
-
 def is_same_domain(base_url, target_url):
     return urlparse(base_url).netloc == urlparse(target_url).netloc
 
