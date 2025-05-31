@@ -19,10 +19,10 @@
      </style>
 </head>
 <body class="bg-gray-900 text-white font-['Montserrat'] h-screen flex flex-col items-center justify-center">
-    <div class="relative w-full max-w-4xl flex flex-col">
+    <div class="relative w-full max-w-4xl flex flex-col items-center justify-center">
         <h2 class="py-4 font-bold transition duration-500 ease-in-out
             {% if result %}
-              text-2xl text-start
+              text-xl text-start
             {% else %}
               text-5xl text-center mb-8
             {% endif %}
@@ -50,10 +50,10 @@
             {% if result %}
                 relative bottom-0 w-full
             {% else %}
-                min-w-[25rem]
+                w-[20rem]
             {% endif %}
         ">
-            <form method="POST" class="flex flex-col">
+            <form method="POST" class="flex flex-col gap-2">
                 <div class="flex 
                     {% if result %}
                     flex-row
@@ -74,7 +74,7 @@
                     <label class="w-fit shrink-0 p-2">Keyword:</label>
                     <input id="keyword-input" type="text" name="keyword" required placeholder="masukan keyword" class="p-2 flex-1 bg-gray-800 text-white rounded-lg active:outline-none active:bg-gray-900 focus:outline-none focus:bg-gray-900">
                 </div>
-                <div class="mt-2 flex 
+                <div class="flex 
                 {% if result %}
                 justify-end
                 {% else %}
