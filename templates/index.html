@@ -36,12 +36,16 @@
                     <p style="color:red;">Error: {{ result.error }}</p>
                 {% else %}
                     <p>URL: <strong>{{ result.url }}</strong></p>
-                    <p>Keyword: <strong>"{{ result.keyword }}"</strong></p>
-                    <p>Found: <strong>{{ "Yes" if result.found else "No" }}</strong></p>
+                    <p>Total pages visited: <strong>{{ result.route | length }}</strong></p>
                     <hr>
-                    <p>
-                        nanti disini muncul rutenya
-                    </p>
+                    <p class="mt-4">Rute Kunjungan:</p>
+                    <ol class="list-decimal list-inside">
+                        {% for link in result.route %}
+                            <li><a href="{{ link }}" target="_blank" class="text-blue-400 underline">{{ link }}</a></li>
+                        {% endfor %}
+                    </ol>
+
+
                 {% endif %}
             </div>
         {% endif %}
