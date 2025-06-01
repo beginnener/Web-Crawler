@@ -21,24 +21,46 @@ def get_links(url):
         print(f"Error fetching {url}: {e}")
         return set()
 
-def bfs_crawl(start_url, max_pages=30):
+def bfs_search_for_keyword(start_url, keyword, max_pages=30):
     visited = set()
-    queue = deque([start_url])
-    route = []
+    queue = deque([[start_url]])
+    count = 0
+    last_path = []
 
-    while queue and len(visited) < max_pages:
-        url = queue.popleft()
+    while queue and count < max_pages:
+        path = queue.popleft()
+        url = path[-1]
+
         if url in visited:
             continue
+
         visited.add(url)
-        route.append(url)
+        last_path = path  # Simpan path terakhir
+        count += 1
         print(f"Visiting: {url}")
 
-        for link in get_links(url):
-            if link not in visited:
-                queue.append(link)
+        try:
+            response = requests.get(url, timeout=5)
+            if keyword.lower() in response.text.lower():
+                return {
+                    "url": start_url,
+                    "keyword": keyword,
+                    "found": True,
+                    "route": path
+                }
 
+            for link in get_links(url):
+                if link not in visited:
+                    queue.append(path + [link])
+
+        except Exception as e:
+            print(f"Error on {url}: {e}")
+            continue
+
+    # Kalau keyword tidak ditemukan, tetap kembalikan route terakhir
     return {
         "url": start_url,
-        "route": route
+        "keyword": keyword,
+        "found": False,
+        "route": last_path
     }

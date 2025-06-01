@@ -39,13 +39,25 @@
                     <p>Total pages visited: <strong>{{ result.route | length }}</strong></p>
                     <hr>
                     <p class="mt-4">Rute Kunjungan:</p>
-                    <ol class="list-decimal list-inside">
-                        {% for link in result.route %}
-                            <li><a href="{{ link }}" target="_blank" class="text-blue-400 underline">{{ link }}</a></li>
-                        {% endfor %}
-                    </ol>
-
-
+                    {% if result.route %}
+                        <ol class="list-decimal list-inside">
+                            {% for link in result.route %}
+                                <li><a href="{{ link }}" target="_blank" class="text-blue-400 underline">{{ link }}</a></li>
+                            {% endfor %}
+                        </ol>
+                    {% else %}
+                        <p class="text-red-400 mt-2">Tidak ada halaman ditemukan</p>
+                    {% endif %}
+                    {% if result.found_in %}
+                        <p class="mt-4 font-semibold text-green-400">Keyword ditemukan di:</p>
+                        <ul class="list-disc list-inside">
+                            {% for link in result.found_in %}
+                                <li><a href="{{ link }}" target="_blank" class="text-green-300 underline">{{ link }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="mt-4 text-red-400">Keyword tidak ditemukan di halaman manapun.</p>
+                    {% endif %}
                 {% endif %}
             </div>
         {% endif %}
