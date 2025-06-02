@@ -1,8 +1,9 @@
-# crawler.py
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 from collections import deque
+import sqlite3
+import json
 
 def is_same_domain(base_url, target_url):
     return urlparse(base_url).netloc == urlparse(target_url).netloc
@@ -64,3 +65,25 @@ def bfs_search_for_keyword(start_url, keyword, max_pages=30):
         "found": False,
         "route": last_path
     }
+
+# ======= Tambahan fungsi untuk simpan hasil ke database =======
+
+def save_crawl_result(seed_url, keyword, route, found):
+    conn = sqlite3.connect('crawler.db')
+    cursor = conn.cursor()
+
+    visited_json = json.dumps(route)  # route yang sudah dilalui, disimpan sebagai JSON string
+    found_json = json.dumps([route[-1]] if found else [])  # url terakhir jika keyword ditemukan, else list kosong
+
+    cursor.execute('''
+        INSERT INTO crawl_results (seed_url, keyword, visited_urls, found_urls)
+        VALUES (?, ?, ?, ?)
+    ''', (seed_url, keyword, visited_json, found_json))
+
+    conn.commit()
+    conn.close()
+
+def bfs_search_for_keyword_and_save(start_url, keyword, max_pages=30):
+    result = bfs_search_for_keyword(start_url, keyword, max_pages)
+    save_crawl_result(result['url'], result['keyword'], result['route'], result['found'])
+    return result
