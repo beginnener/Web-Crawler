@@ -48,37 +48,18 @@ def index():
         keyword = request.form.get('keyword')
         depth = int(request.form.get('depth'))
         max_result = int(request.form.get('max_result'))
-        mode = request.form.get('mode', 'cached')
 
         if seed and keyword:
             if not seed.startswith("http"):
                 seed = "https://" + seed
 
-            # Jika fresh: hapus semua hasil sebelumnya
-            if mode == 'fresh':
-                conn = mysql.connector.connect(
-                    host='localhost',
-                    user='root',
-                    password='',
-                    database='crawler_db'
-                )
-                cursor = conn.cursor()
-                cursor.execute(
-                    "DELETE FROM crawl_results WHERE seed_url = %s AND keyword = %s",
-                    (seed, keyword)
-                )
-                conn.commit()
-                conn.close()
-
-            # Ambil hasil dari DB (cached)
             cached_results = get_cached_result(seed, keyword, depth, max_result)
             results = cached_results if cached_results else []
 
             # Kalau hasil masih kurang, lanjut crawling sisanya
             if len(results) < max_result:
-                remaining = max_result - len(results)
-                new_results = dfs_search_for_keyword_and_save(seed, keyword, remaining, depth)
-                results += new_results
+                new_results = dfs_search_for_keyword_and_save(seed, keyword, max_result, depth)
+                results = get_cached_result(seed, keyword, depth, len(results))
 
             return render_template('crawler.html', results=results)
 
