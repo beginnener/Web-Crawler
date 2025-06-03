@@ -59,7 +59,7 @@ def index():
             # Kalau hasil masih kurang, lanjut crawling sisanya
             if len(results) < max_result:
                 new_results = dfs_search_for_keyword_and_save(seed, keyword, max_result, depth)
-                results = get_cached_result(seed, keyword, depth, len(results))
+                results = get_cached_result(seed, keyword, depth, len(new_results))
 
             return render_template('crawler.html', results=results)
 
