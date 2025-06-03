@@ -14,16 +14,36 @@
                 <p><strong>Seed URL:</strong> {{ record.seed_url }}</p>
                 <p><strong>Keyword:</strong> {{ record.keyword }}</p>
                 <p><strong>Tanggal:</strong> {{ record.created_at }}</p>
-                <p><strong>Jumlah halaman dikunjungi:</strong> {{ record.visited_urls|length }}</p>
-                <p><strong>Halaman ditemukan:</strong></p>
-                <ul class="list-disc list-inside text-green-400">
-                    {% for link in record.found_urls %}
-                        <li><a href="{{ link }}" target="_blank" class="underline">{{ link }}</a></li>
-                    {% endfor %}
-                </ul>
+
+                <p class="mt-2"><strong>Rute ke Halaman yang Mengandung Keyword:</strong></p>
+                {% if record.visited_urls %}
+                    <div class="text-blue-300 mt-2">
+                        {% for i in range(record.visited_urls | length) %}
+                            {% set url = record.visited_urls[i] %}
+                            <span>
+                                <a href="{{ url }}" class="underline" target="_blank">{{ url }}</a>
+                            </span>
+                            {% if not loop.last %}
+                                <span class="mx-2 text-white">→</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                {% else %}
+                    <p class="text-red-400">Tidak ada rute tersimpan.</p>
+                {% endif %}
+
+                {% if record.found_urls %}
+                    <p class="mt-2 text-green-400 font-semibold">Keyword ditemukan di:</p>
+                    <ul class="list-disc list-inside text-green-300">
+                        {% for found in record.found_urls %}
+                            <li><a href="{{ found }}" class="underline" target="_blank">{{ found }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-red-400 mt-2">Keyword tidak ditemukan.</p>
+                {% endif %}
             </div>
-        {% else %}
-            <p class="text-red-400">Belum ada data hasil crawling.</p>
         {% endfor %}
     </div>
 </body>
