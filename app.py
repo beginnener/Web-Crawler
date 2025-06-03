@@ -34,6 +34,8 @@ def index():
     if request.method == 'POST':
         seed = request.form.get('seed')
         keyword = request.form.get('keyword')
+        depth = int(request.form.get('depth'))
+        max_result = int(request.form.get('max_result'))
         mode = request.form.get('mode', 'cached')
 
         if seed and keyword:
@@ -57,11 +59,11 @@ def index():
                 conn.close()
 
                 # Lakukan crawling ulang
-                result = dfs_search_for_keyword_and_save(seed, keyword)
+                result = dfs_search_for_keyword_and_save(seed, keyword, max_result, depth)
 
             result = get_cached_result(seed, keyword)
             if not result:
-                result = dfs_search_for_keyword_and_save(seed, keyword)
+                result = dfs_search_for_keyword_and_save(seed, keyword, max_result, depth)
         return render_template('crawler.html', results=result)
     else:
         return render_template('index.html')

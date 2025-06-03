@@ -42,7 +42,7 @@ def save_crawl_result(seed_url, keyword, route, found):
     conn.commit()
     conn.close()
 
-def dfs_search_for_keyword_and_save(start_url, keyword, max_pages=30):
+def dfs_search_for_keyword_and_save(start_url, keyword, max_pages=30, max_depth=3):
     visited = set()
     result_count = 0
     found_routes = []
@@ -50,7 +50,7 @@ def dfs_search_for_keyword_and_save(start_url, keyword, max_pages=30):
     def dfs(current_url, path, depth):
         nonlocal result_count
 
-        if result_count >= max_pages:
+        if result_count >= max_pages or depth > max_depth:
             return
 
         if current_url in visited:
@@ -62,7 +62,7 @@ def dfs_search_for_keyword_and_save(start_url, keyword, max_pages=30):
         try:
             response = requests.get(current_url, timeout=5)
             if keyword.lower() in response.text.lower():
-                found_routes.append(path[:])  # simpan salinan rute
+                found_routes.append(path[:])
                 save_crawl_result(start_url, keyword, path[:], True)
                 result_count += 1
         except Exception as e:
