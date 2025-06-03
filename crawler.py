@@ -63,6 +63,22 @@ def dfs_search_for_keyword_and_save(start_url, keyword, max_pages=30, max_depth=
             response = requests.get(current_url, timeout=5)
             if keyword.lower() in response.text.lower():
                 found_routes.append(path[:])
+                visited_json = json.dumps(path[:])
+                found_json = json.dumps([path[-1]])
+
+                conn = mysql.connector.connect(
+                    host='localhost',
+                    user='root',
+                    password='',
+                    database='crawler_db'
+                )
+                cursor = conn.cursor()
+                cursor.execute('''
+                    DELETE FROM crawl_results
+                    WHERE seed_url = %s AND keyword = %s AND visited_urls = %s AND found_urls = %s
+                ''', (start_url, keyword, visited_json, found_json))
+                conn.commit()
+                conn.close()
                 save_crawl_result(start_url, keyword, path[:], True)
                 result_count += 1
         except Exception as e:

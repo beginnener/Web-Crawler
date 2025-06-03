@@ -5,7 +5,7 @@ import json
 
 app = Flask(__name__)
 
-def get_cached_result(seed_url, keyword):
+def get_cached_result(seed_url, keyword, max_depth=None, max_pages=None):
     conn = mysql.connector.connect(
         host='localhost',
         user='root',
@@ -18,15 +18,29 @@ def get_cached_result(seed_url, keyword):
         WHERE seed_url = %s AND keyword = %s
         ORDER BY created_at DESC
     ''', (seed_url, keyword))
-    result = cursor.fetchall()
+    raw_results = cursor.fetchall()
     conn.close()
 
-    if result:
-        for r in result:
-            r['visited_urls'] = json.loads(r['visited_urls']) if r['visited_urls'] else []
-            r['found_urls'] = json.loads(r['found_urls']) if r['found_urls'] else []
-        return result
-    return None
+    filtered_results = []
+
+    for r in raw_results:
+        r['visited_urls'] = json.loads(r['visited_urls']) if r['visited_urls'] else []
+        r['found_urls'] = json.loads(r['found_urls']) if r['found_urls'] else []
+
+        # Hitung depth dari panjang rute
+        current_depth = len(r['visited_urls'])
+
+        # Cek apakah sesuai dengan kriteria filter
+        if max_depth is not None and current_depth > max_depth:
+            continue
+
+        filtered_results.append(r)
+
+        # Batasi jumlah hasil (jika max_pages di-set)
+        if max_pages is not None and len(filtered_results) >= max_pages:
+            break
+
+    return filtered_results if filtered_results else None
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -61,7 +75,7 @@ def index():
                 # Lakukan crawling ulang
                 result = dfs_search_for_keyword_and_save(seed, keyword, max_result, depth)
 
-            result = get_cached_result(seed, keyword)
+            result = get_cached_result(seed, keyword, depth, max_result)
             if not result:
                 result = dfs_search_for_keyword_and_save(seed, keyword, max_result, depth)
         return render_template('crawler.html', results=result)
