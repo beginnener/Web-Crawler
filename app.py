@@ -41,10 +41,8 @@ def get_cached_result(seed_url, keyword, max_depth=None, max_pages=None):
             break
 
     return filtered_results if filtered_results else None
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    result = None
     if request.method == 'POST':
         seed = request.form.get('seed')
         keyword = request.form.get('keyword')
@@ -56,8 +54,8 @@ def index():
             if not seed.startswith("http"):
                 seed = "https://" + seed
 
+            # Jika fresh: hapus semua hasil sebelumnya
             if mode == 'fresh':
-                # Hapus entri lama dengan seed dan keyword yang sama
                 conn = mysql.connector.connect(
                     host='localhost',
                     user='root',
@@ -72,15 +70,20 @@ def index():
                 conn.commit()
                 conn.close()
 
-                # Lakukan crawling ulang
-                result = dfs_search_for_keyword_and_save(seed, keyword, max_result, depth)
+            # Ambil hasil dari DB (cached)
+            cached_results = get_cached_result(seed, keyword, depth, max_result)
+            results = cached_results if cached_results else []
 
-            result = get_cached_result(seed, keyword, depth, max_result)
-            if not result:
-                result = dfs_search_for_keyword_and_save(seed, keyword, max_result, depth)
-        return render_template('crawler.html', results=result)
-    else:
-        return render_template('index.html')
+            # Kalau hasil masih kurang, lanjut crawling sisanya
+            if len(results) < max_result:
+                remaining = max_result - len(results)
+                new_results = dfs_search_for_keyword_and_save(seed, keyword, remaining, depth)
+                results += new_results
+
+            return render_template('crawler.html', results=results)
+
+    # GET request
+    return render_template('index.html')
 
 @app.route('/history')
 def history():

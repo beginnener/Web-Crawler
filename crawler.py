@@ -63,6 +63,8 @@ def dfs_search_for_keyword_and_save(start_url, keyword, max_pages=30, max_depth=
             response = requests.get(current_url, timeout=5)
             if keyword.lower() in response.text.lower():
                 found_routes.append(path[:])
+
+                # Cek dan hapus jika duplikat
                 visited_json = json.dumps(path[:])
                 found_json = json.dumps([path[-1]])
 
@@ -79,6 +81,7 @@ def dfs_search_for_keyword_and_save(start_url, keyword, max_pages=30, max_depth=
                 ''', (start_url, keyword, visited_json, found_json))
                 conn.commit()
                 conn.close()
+
                 save_crawl_result(start_url, keyword, path[:], True)
                 result_count += 1
         except Exception as e:
@@ -91,10 +94,13 @@ def dfs_search_for_keyword_and_save(start_url, keyword, max_pages=30, max_depth=
 
     dfs(start_url, [start_url], 0)
 
-    return {
-        "url": start_url,
-        "keyword": keyword,
-        "found": bool(found_routes),
-        "route": found_routes[0] if found_routes else []
-    }
-
+    return [
+        {
+            "url": start_url,
+            "keyword": keyword,
+            "found": True,
+            "route": route,
+            "found_in": [route[-1]]
+        }
+        for route in found_routes
+    ]
