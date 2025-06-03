@@ -1,129 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-    <title>Simple Web Crawler</title>
-    <style>
-        .scrollbar-thin::-webkit-scrollbar {
-        width: 6px;
-        }
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-        background-color: rgba(255, 255, 255, 0.2);
-        border-radius: 4px;
-        }
-        .scrollbar-thin {
-        scrollbar-width: thin;
-        scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-        }
-     </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Web Crawler</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-900 text-white font-['Montserrat'] h-screen flex flex-col items-center justify-center">
-    <div class="relative w-full max-w-4xl flex flex-col items-center justify-center">
-        <h2 class="py-4 font-bold transition duration-500 ease-in-out
-            {% if result %}
-              text-xl text-start
-            {% else %}
-              text-5xl text-center mb-8
-            {% endif %}
-        ">
-            Simple Web Crawler
-        </h2>
-        
-        {% if result %}
-            <div id="chat-container" class="p-8 h-[calc(60vh)] w-full overflow-y-auto px-4 pb-32 scrollbar-thin">
-                {% if result.error %}
-                    <p style="color:red;">Error: {{ result.error }}</p>
-                {% else %}
-                    <p>URL: <strong>{{ result.url }}</strong></p>
-                    <p>Total pages visited: <strong>{{ result.route | length }}</strong></p>
-                    <hr>
-                    <p class="mt-4">Rute Kunjungan:</p>
-                    {% if result.route %}
-                        <ol class="list-decimal list-inside">
-                            {% for link in result.route %}
-                                <li><a href="{{ link }}" target="_blank" class="text-blue-400 underline">{{ link }}</a></li>
-                            {% endfor %}
-                        </ol>
-                    {% else %}
-                        <p class="text-red-400 mt-2">Tidak ada halaman ditemukan</p>
-                    {% endif %}
-                    {% if result.found_in %}
-                        <p class="mt-4 font-semibold text-green-400">Keyword ditemukan di:</p>
-                        <ul class="list-disc list-inside">
-                            {% for link in result.found_in %}
-                                <li><a href="{{ link }}" target="_blank" class="text-green-300 underline">{{ link }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="mt-4 text-red-400">Keyword tidak ditemukan di halaman manapun.</p>
-                    {% endif %}
-                {% endif %}
-            </div>
-        {% endif %}
-        
-        <div class="bg-gray-800 rounded-lg shadow-2xl p-4
-            {% if result %}
-                relative bottom-0 w-full
-            {% else %}
-                w-[20rem]
-            {% endif %}
-        ">
-            <form method="POST" class="flex flex-col gap-2">
-                <div class="flex 
-                    {% if result %}
-                    flex-row
-                    {% else %}
-                    flex-col
-                    {% endif %}
-                    ">
-                    <label class="w-fit p-2 shrink-0">Seed URL:</label>
-                    <input id="seed-input" type="text" name="seed" required placeholder="https://" class="p-2 flex-1 bg-gray-800 text-white rounded-lg active:outline-none active:bg-gray-900 focus:outline-none focus:bg-gray-900">
-                </div>
-                <div class="flex 
-                    {% if result %}
-                    flex-row
-                    {% else %}
-                    flex-col
-                    {% endif %}
-                    ">
-                    <label class="w-fit shrink-0 p-2">Keyword:</label>
-                    <input id="keyword-input" type="text" name="keyword" required placeholder="masukan keyword" class="p-2 flex-1 bg-gray-800 text-white rounded-lg active:outline-none active:bg-gray-900 focus:outline-none focus:bg-gray-900">
-                </div>
-                <div class="flex 
-                {% if result %}
-                justify-end
-                {% else %}
-                justify-center
-                {% endif %}">
-                    <button type="submit" class="p-2 bg-blue-700 hover:bg-blue-900 text-white font-bold rounded">
-                        Start Crawl!
-                    </button>
-                </div>
-            </form>
+<body class="bg-gray-900 text-gray-100 flex items-center justify-center min-h-screen p-6 font-['Montserrat']">
+    <div class="min-w-md max-w-4xl p-8 flex flex-col items-center justify-center">
+        <h1 id="page-title" class="text-5xl font-bold text-gray-200 text-center">Simple Web Crawler</h1>
+        <div class="text-center text-md mt-4 mb-6">
+            <p>Selamat datang di simple web crawler! Silakan masukkan data berikut untuk mulai menelusuri web.</p>
         </div>
+        <main class="bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6 flex flex-col space-y-6">
+            <form id="form-input" method="POST" action="/" class="flex flex-col space-y-5">
+                <label for="seed" class="font-semibold text-zinc-100">Seed URL:</label>
+                <input
+                    type="text"
+                    id="seed"
+                    name="seed"
+                    placeholder="https://example.com"
+                    required
+                    class="rounded-lg px-4 py-3 bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                />
+                <label for="keyword" class="font-semibold text-zinc-100">Keyword:</label>
+                <input
+                    type="text"
+                    id="keyword"
+                    name="keyword"
+                    placeholder="Masukkan kata kunci"
+                    required
+                    class="rounded-lg px-4 py-3 bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                />
+                <label for="depth" class="font-semibold text-zinc-100">Kedalaman Penelusuran:</label>
+                <input
+                    type="number"
+                    id="depth"
+                    name="depth"
+                    placeholder="Misal: 2"
+                    min="1"
+                    max="10"
+                    required
+                    class="rounded-lg px-4 py-3 bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                />
+                <button
+                    type="submit"
+                    class="bg-teal-400 hover:bg-teal-500 transition rounded-lg font-bold text-gray-900 py-3 shadow-lg"
+                >
+                    Mulai Crawl
+                </button>
+            </form>
+    
+            <footer class="text-center text-gray-500 text-sm mt-4">
+            Powered by Kelompok rubidesinenenji
+            </footer>
+        </main>
     </div>
 </body>
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const chatContainer = document.getElementById('chat-container');
-      if (chatContainer) {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }
-    });
-
-    function bindDynamicBackground(inputEl, emptyClass = 'bg-gray-800', filledClass = 'bg-gray-900') {
-            function update() {
-                const isFilled = inputEl.value.trim() !== '';
-                inputEl.classList.toggle(emptyClass, !isFilled);
-                inputEl.classList.toggle(filledClass, isFilled);
-            }
-
-            inputEl.addEventListener('input', update);
-            update();
-        }
-
-        bindDynamicBackground(document.getElementById('seed-input'));
-        bindDynamicBackground(document.getElementById('keyword-input'));
-</script>
 </html>
