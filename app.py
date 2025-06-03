@@ -15,14 +15,15 @@ def index():
             if not seed.startswith("http"):
                 seed = "https://" + seed
             result = dfs_search_for_keyword_and_save(seed, keyword)
-    return render_template('index.html', result=result)
-
+        return render_template('crawler.html', result=result)
+    else:
+        return render_template('index.html')
 @app.route('/history')
 def history():
     conn = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='',  # sesuaikan jika pakai password
+        password='', 
         database='crawler_db'
     )
     cursor = conn.cursor(dictionary=True)
