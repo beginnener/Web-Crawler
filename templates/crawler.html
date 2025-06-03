@@ -67,50 +67,47 @@
 
         </div>
         <main class="shrink-0 relative bottom-0 bg-gray-800 rounded-xl shadow-xl w-full max-w-4xl p-4 flex flex-col space-y-4">
-            <form method="POST" action="/" class="flex flex-col space-y-5">
-                <div class="flex flex-row items-center space-x-4">
-                    <label for="seed_url" class="shrink-0 text-zinc-100">Seed URL:</label>
-                    <input
-                        type="text"
-                        id="seed_url"
-                        name="seed_url"
-                        placeholder="https://example.com"
-                        required
-                        class="w-full rounded-lg px-4 py-3 bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                    />
-                </div>
-                <div class="flex flex-row items-center space-x-4">
-                    <label for="keyword" class="shrink-0 text-zinc-100">Keyword:</label>
-                    <input
-                        type="text"
-                        id="keyword"
-                        name="keyword"
-                        placeholder="Masukkan kata kunci"
-                        required
-                        class="w-full rounded-lg px-4 py-3 bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                    />
-                </div>
-                <div class="flex flex-row items-center space-x-4">
-                    <label for="depth" class="shrink-0 text-zinc-100">Search Depth:</label>
-                    <input
-                        type="number"
-                        id="depth"
-                        name="depth"
-                        placeholder="Misal: 2"
-                        min="1"
-                        max="10"
-                        required
-                        class="w-full rounded-lg px-4 py-3 bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                    />
-                </div>
-                <div class="flex justify-end">
-                    <button
-                        type="submit"
-                        class="w-32 bg-teal-400 hover:bg-teal-500 transition rounded-lg font-bold text-gray-900 py-3 shadow-lg"
-                    >
-                        Mulai Crawl
-                    </button>
-                </div>
+            <form id="form-input" method="POST" action="/" class="flex flex-col space-y-5">
+                <label for="seed" class="font-semibold text-zinc-100">Seed URL:</label>
+                <input
+                    type="text"
+                    id="seed"
+                    name="seed"
+                    placeholder="https://example.com"
+                    required
+                    class="rounded-lg px-4 py-3 bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                />
+                <label for="keyword" class="font-semibold text-zinc-100">Keyword:</label>
+                <input
+                    type="text"
+                    id="keyword"
+                    name="keyword"
+                    placeholder="Masukkan kata kunci"
+                    required
+                    class="rounded-lg px-4 py-3 bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                />
+                <label for="depth" class="font-semibold text-zinc-100">Kedalaman Penelusuran:</label>
+                <input
+                    type="number"
+                    id="depth"
+                    name="depth"
+                    placeholder="Misal: 2"
+                    min="1"
+                    max="10"
+                    required
+                    class="rounded-lg px-4 py-3 bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                />
+                <label class="text-sm">Mode Pencarian:</label>
+                <select name="mode" class="p-2 bg-gray-800 text-white rounded-lg border border-gray-600">
+                    <option value="cached">Gunakan hasil dari database</option>
+                    <option value="fresh">Crawl ulang dari awal</option>
+                </select>
+                <button
+                    type="submit"
+                    class="bg-teal-400 hover:bg-teal-500 transition rounded-lg font-bold text-gray-900 py-3 shadow-lg"
+                >
+                    Mulai Crawl
+                </button>
             </form>
     
             <footer class="text-center text-gray-500 text-sm">
